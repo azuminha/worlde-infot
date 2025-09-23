@@ -1,0 +1,45 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+*.env
+pyvenv.cfg
+
+# VSCode or other IDE config
+.vscode/
+.idea/
+
+# Mac / Linux hidden files
+.DS_Store
+Thumbs.db
+
+# Compiled C files (if using C extensions)
+*.so
+
+# Jupyter Notebook checkpoints (if using notebooks)
+.ipynb_checkpoints/
+
+# Build/Distribution directories
+build/
+dist/
+*.egg-info/
+
+# Log files
+*.log
+
+# lib, lib64, bin folders (commonly part of venv)
+lib/
+lib64/
+bin/
+include/
+
