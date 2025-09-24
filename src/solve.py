@@ -1,8 +1,15 @@
-import math
-import threading
-from collections import Counter
-
 from enum import Enum
+from collections import Counter
+import math
+import sys
+
+
+path = "./data/words.txt"
+if len(sys.argv) == 1:
+    print(f"using path = {
+          path}\nif u want to use another path please pass by argument")
+else:
+    path = sys.argv[1]
 
 
 class LetterState(Enum):
@@ -50,12 +57,12 @@ class Word:
 letters = []
 for i in range(0, 26):
     letters.append(Letter(chr(ord('a') + i)))
-    print(letters[i])
+   # print(letters[i])
 
 
 words = []
 
-with open('../data/words.txt', 'r') as file:
+with open(path, 'r') as file:
     for word in file:
         words.append(Word(word.strip(), 0))
 
@@ -126,11 +133,11 @@ def parse_pattern(pattern_input):
     ret_pat = [PatternState.GRAY] * 5
 
     for i in range(5):
-        if (pattern_input[i] == 'G'):
+        if (pattern_input[i].upper() == 'G'):
             ret_pat[i] = PatternState.GREEN
-        if (pattern_input[i] == 'Y'):
+        if (pattern_input[i].upper() == 'Y'):
             ret_pat[i] = PatternState.YELLOW
-        if (pattern_input[i] == 'B'):
+        if (pattern_input[i].upper() == 'B'):
             ret_pat[i] = PatternState.GRAY
 
     return Pattern(ret_pat)
@@ -144,24 +151,42 @@ def filter_words(words, guess, pattern):
     return ret
 
 
+all_words = words.copy()
+
+skip_first = True
 while (len(words) > 1):
     print(f"size: {len(words)}")
+
+    # update words
+    if skip_first:
+        guess_input = input("Enter your guess word: ").strip().lower()
+        pattern_input = input("Enter the resulting pattern (G/Y/B): ").strip()
+        assert (len(pattern_input) == 5)
+
+        pattern = parse_pattern(pattern_input)
+        words = filter_words(words, Word(guess_input, 0), pattern)
+
+    assert (len(words) > 0)
 
     for word in words:
         entropy = calculate_entropy(word)
         word.self_info = entropy
         # print(f"word {word.word}, entropy: {entropy}")
 
+    for word in all_words:
+        entropy = calculate_entropy(word)
+        word.self_info = entropy
+
     words.sort(key=lambda w: w.self_info, reverse=True)
-    for w in words[:15]:
+    print("Possible answers")
+    for w in words[:5]:
         print(w)
 
-    # update words
-    guess_input = input("Enter your guess word: ").strip().lower()
-    pattern_input = input("Enter the resulting pattern (G/Y/B): ").strip()
-    assert (len(pattern_input) == 5)
+    all_words.sort(key=lambda w: w.self_info, reverse=True)
+    print("All words")
+    for w in all_words[:5]:
+        print(w)
 
-    pattern = parse_pattern(pattern_input)
-    words = filter_words(words, Word(guess_input, 0), pattern)
+    skip_first = True
 
 print(words[0])
